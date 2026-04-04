@@ -9,7 +9,7 @@ Predict **acute tubular injury (ATI)** from plasma proteomics, as a binary class
 | **0** | No ATI |
 | **1** | ATI present |
 
-Your model will be evaluated on an **external held-out test cohort** (KPMP) using **AUC** and **log loss**. Your goal is to build a model that generalises beyond the BKBC training data.
+Your model will be evaluated on an **external held-out test cohort** (KPMP) using **log loss**. Your goal is to build a model that generalises beyond the BKBC training data.
 
 ---
 
@@ -154,32 +154,6 @@ BKBC/
 ```
 
 ---
-
-## Baseline Performance
-
-The provided XGBoost baseline achieves approximately:
-
-| Metric | BKBC 5-Fold CV |
-|--------|----------------|
-| AUC    | ~0.76          |
-| Log loss | ~0.59        |
-
----
-
-## Tips for Improving Beyond the Baseline
-
-1. **Feature selection** — 6,592 features is high-dimensional. Use LASSO coefficients, univariate tests, or biological priors to select a focused subset.
-
-2. **Hyperparameter tuning** — try `optuna` or `GridSearchCV` on `n_estimators`, `max_depth`, `colsample_bytree`, or the LR regularisation strength `C`.
-
-3. **Alternative models** — random forests, ElasticNet, neural networks, or ensemble stacking.
-
-4. **Clinical-only baseline** — train on `age`, `sex`, `baseline_egfr_23` alone to quantify the protein contribution.
-
-5. **Class imbalance** — experiment with `scale_pos_weight` in XGBoost or `class_weight='balanced'` in scikit-learn.
-
----
-
 ## Getting Help
 
 ```bash
