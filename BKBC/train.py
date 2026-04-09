@@ -9,7 +9,7 @@ The saved model is used by predict.py / predict.sh for inference.
 
 USAGE
 -----
-    python train.py --data /path/to/BKBC_train/train.csv
+    python train.py --data /path/to/BKBC_train/train.csv  # Training on any other data will result in disqualification
 
 OUTPUTS  (written to weights/ directory)
 -------
