@@ -9,7 +9,7 @@ Predict **acute tubular injury (ATI)** from plasma proteomics, as a binary class
 | **0** | No ATI |
 | **1** | ATI present |
 
-Your model will be evaluated on an **external held-out test cohort** (KPMP) using **log loss**. Your goal is to build a model that generalises beyond the BKBC training data.
+Your model will be evaluated on an **external held-out test cohort** using **log loss**. Your goal is to build a model that generalises beyond the BKBC training data.
 
 ---
 
@@ -20,6 +20,7 @@ Training data is located at:
 ```
 /projectnb/medaihack/BKBC-hackathon/BKBC_train/train.csv
 ```
+You should **NOT** change the training data path, and training on any other data will result in disqualification. 
 
 It contains **426 patients** (one row each) with the following columns:
 
@@ -37,8 +38,6 @@ All protein features have been **batch-corrected** using reference ComBat so the
 ---
 
 ## Environment Setup
-
-One person per team should be responsible for creating and managing the team's virtual environment.
 
 **First-time setup:**
 
@@ -139,7 +138,7 @@ If the input file contains an `ati` column, evaluation metrics are printed autom
 
 ---
 
-## File Structure
+## Starter Code Structure
 
 ```
 BKBC/
