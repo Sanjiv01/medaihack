@@ -144,7 +144,8 @@ img = (img - img.min()) / (img.max() - img.min())
 │   └── val.csv                  # Validation split (stratified by tracer)
 └── medaihack/ABPET/             # this repository
     ├── checkpoints/             # Saved model weights (created at train time)
-    ├── results/                 # Logs, metrics CSV, and plots (created at train time)
+    ├── logs/                    # Training log files (created at train time)
+    ├── results/                 # Metrics CSV and plots (created at train time)
     ├── dataset.py               # Shared dataset class
     ├── losses.py                # Loss functions
     ├── model.py                 # 3D CNN architecture
@@ -191,7 +192,8 @@ losses.py   --->  regression loss
             |
             v
 train.py    --->  checkpoints/best_model.pt        (best model weights)
-                  results/                          (training + validation logs)
+                  logs/                             (training log file)
+                  results/                          (metrics CSV and plots)
                   console: train loss, val MAE, Pearson correlation
             |
             v

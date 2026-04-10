@@ -32,8 +32,9 @@ except ImportError:
 # Logging setup
 # ---------------------------------------------------------------------------
 
-def setup_logger(log_dir: Path):
+def setup_logger(log_dir: Path, results_dir: Path):
     log_dir.mkdir(parents=True, exist_ok=True)
+    results_dir.mkdir(parents=True, exist_ok=True)
     timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
     log_file = log_dir / f"train_{timestamp}.log"
 
@@ -49,7 +50,7 @@ def setup_logger(log_dir: Path):
     ch.setFormatter(fmt)
     logger.addHandler(ch)
 
-    return logger, log_dir, timestamp
+    return logger, log_dir, results_dir, timestamp
 
 
 # ---------------------------------------------------------------------------
@@ -67,7 +68,7 @@ def train_one_epoch(model, loader, optimizer, criterion, device, scaler, max_gra
         tracers = tracers.to(device, non_blocking=True)
 
         optimizer.zero_grad(set_to_none=True)
-        with torch.amp.autocast("cuda"):
+        with torch.amp.autocast(device.type):
             preds = model(images, tracers)
             loss = criterion(preds, centiloids)
 
@@ -92,7 +93,7 @@ def validate(model, loader, device):
         images = images.to(device, non_blocking=True)
         tracers = tracers.to(device, non_blocking=True)
 
-        with torch.amp.autocast("cuda"):
+        with torch.amp.autocast(device.type):
             preds = model(images, tracers)
 
         all_preds.append(preds.cpu())
@@ -109,7 +110,7 @@ def validate(model, loader, device):
 # Plotting
 # ---------------------------------------------------------------------------
 
-def save_plots(history, log_dir, timestamp):
+def save_plots(history, results_dir, timestamp):
     if not HAS_MPL:
         return
 
@@ -136,7 +137,7 @@ def save_plots(history, log_dir, timestamp):
     axes[2].legend()
 
     fig.tight_layout()
-    fig.savefig(log_dir / f"curves_{timestamp}.png", dpi=150)
+    fig.savefig(results_dir / f"curves_{timestamp}.png", dpi=150)
     plt.close(fig)
 
 
@@ -155,14 +156,16 @@ def main():
     parser.add_argument("--checkpoint_dir", type=str, default="checkpoints",
                         help="Directory to save model checkpoints")
     parser.add_argument("--cache", action="store_true",
-                        help="Cache all volumes in RAM (~12GB for 1500 samples)")
+                        help="Cache all volumes in RAM (~16GB for 2000 samples)")
     parser.add_argument("--loss", type=str, default="mae",
                         choices=["mse", "mae"],
                         help="Loss function to use")
     parser.add_argument("--patience", type=int, default=7,
                         help="Early stopping patience (0 to disable)")
+    parser.add_argument("--log_dir", type=str, default="logs",
+                        help="Directory for training log files")
     parser.add_argument("--results_dir", type=str, default="results",
-                        help="Directory for logs, metrics CSV, and plots")
+                        help="Directory for metrics CSV and plots")
     args = parser.parse_args()
 
     # --- Directories ---
@@ -171,7 +174,7 @@ def main():
     checkpoint_path = checkpoint_dir / "best_model.pt"
 
     # --- Logging ---
-    logger, log_dir, timestamp = setup_logger(Path(args.results_dir))
+    logger, log_dir, results_dir, timestamp = setup_logger(Path(args.log_dir), Path(args.results_dir))
     logger.info(f"Args: {vars(args)}")
 
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
@@ -211,10 +214,10 @@ def main():
     # --- Training setup ---
     optimizer = torch.optim.AdamW(model.parameters(), lr=args.lr, weight_decay=1e-4)
     criterion = get_criterion(args.loss)
-    scaler = torch.amp.GradScaler("cuda")
+    scaler = torch.amp.GradScaler(device.type)
 
     # --- Metrics CSV ---
-    metrics_path = log_dir / f"metrics_{timestamp}.csv"
+    metrics_path = results_dir / f"metrics_{timestamp}.csv"
     metrics_file = open(metrics_path, "w", newline="")
     metrics_writer = csv.writer(metrics_file)
     metrics_writer.writerow(["epoch", "train_loss", "val_mae", "val_corr", "lr", "epoch_time_s", "is_best"])
@@ -270,13 +273,13 @@ def main():
     metrics_file.close()
 
     # --- Plots ---
-    save_plots(history, log_dir, timestamp)
+    save_plots(history, results_dir, timestamp)
 
     logger.info(f"Best validation MAE: {best_mae:.2f} centiloid units")
     logger.info(f"Model saved to {checkpoint_path}")
     logger.info(f"Metrics: {metrics_path}")
     if HAS_MPL:
-        logger.info(f"Plots: {log_dir / f'curves_{timestamp}.png'}")
+        logger.info(f"Plots: {results_dir / f'curves_{timestamp}.png'}")
 
 
 if __name__ == "__main__":
