@@ -5,7 +5,7 @@ Loads a trained checkpoint and runs inference on a CSV of samples,
 outputting predicted centiloid scores.
 
 Usage:
-    python predict.py --csv test.csv --checkpoint best_model.pt --output predictions.csv
+    python predict.py --csv /projectnb/medaihack/ABPET/data/val.csv --checkpoint /projectnb/medaihack/ABPET/medaihack/ABPET/checkpoints/best_model.pt --output predictions.csv
 """
 
 import argparse

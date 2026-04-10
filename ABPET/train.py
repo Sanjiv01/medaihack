@@ -2,7 +2,7 @@
 Training script for Amyloid PET Centiloid Prediction.
 
 Usage:
-    python train.py --train_csv ../data/train.csv --val_csv ../data/val.csv --patience 10
+    python train.py --train_csv /projectnb/medaihack/ABPET/data/train.csv --val_csv /projectnb/medaihack/ABPET/data/val.csv --patience 10
 """
 
 import argparse

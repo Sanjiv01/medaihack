@@ -137,23 +137,23 @@ img = (img - img.min()) / (img.max() - img.min())
 ## Project Structure
 
 ```text
-ABPET/
+/projectnb/medaihack/ABPET/
 ├── data/
-│   ├── npy_files/       # All .npy volumes
-│   ├── train.csv        # Training split (stratified by tracer)
-│   └── val.csv          # Validation split (stratified by tracer)
-├── code/
-│   ├── model.py             # 3D CNN architecture
-│   ├── train.py             # Training script
-│   ├── predict.py           # Inference script
-│   ├── dataset.py           # Shared dataset class
-│   ├── losses.py            # Loss functions
-│   ├── checkpoints/         # Saved model weights (created at train time)
-│   ├── results/             # Logs, metrics CSV, and plots (created at train time)
-│   └── visualize_pet.ipynb  # Notebook for exploring PET volumes
-├── predict.sh
-├── README.md
-└── requirements.txt
+│   ├── npy_files/               # All .npy volumes
+│   ├── train.csv                # Training split (stratified by tracer)
+│   └── val.csv                  # Validation split (stratified by tracer)
+└── medaihack/ABPET/             # this repository
+    ├── checkpoints/             # Saved model weights (created at train time)
+    ├── results/                 # Logs, metrics CSV, and plots (created at train time)
+    ├── dataset.py               # Shared dataset class
+    ├── losses.py                # Loss functions
+    ├── model.py                 # 3D CNN architecture
+    ├── predict.py               # Inference script
+    ├── predict.sh               # Evaluation entry point
+    ├── train.py                 # Training script
+    ├── visualize_pet.ipynb      # Notebook for exploring PET volumes
+    ├── README.md
+    └── requirements.txt
 ```
 
 ## Getting Started
@@ -161,13 +161,11 @@ ABPET/
 To get started, you can visualize the different images using `visualize_pet.ipynb`.
 
 ```bash
-cd code
-
 # Train
-python train.py --train_csv ../data/train.csv --val_csv ../data/val.csv
+python train.py --train_csv /projectnb/medaihack/ABPET/data/train.csv --val_csv /projectnb/medaihack/ABPET/data/val.csv
 
 # Predict
-python predict.py --csv ../data/val.csv --checkpoint best_model.pt
+python predict.py --csv /projectnb/medaihack/ABPET/data/val.csv --checkpoint /projectnb/medaihack/ABPET/medaihack/ABPET/checkpoints/best_model.pt
 ```
 
 ## Pipeline
