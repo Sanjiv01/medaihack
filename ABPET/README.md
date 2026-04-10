@@ -151,27 +151,32 @@ Each volume is independently normalized to the `[0, 1]` range:
 img = (img - img.min()) / (img.max() - img.min())
 ```
 
-## Project Structure
+## Data Structure
 
 ```text
 /projectnb/medaihack/ABPET/
-├── data/
-│   ├── npy_files/               # All .npy volumes
-│   ├── train.csv                # Training split (stratified by tracer)
-│   └── val.csv                  # Validation split (stratified by tracer)
-└── medaihack/ABPET/             # this repository
-    ├── checkpoints/             # Saved model weights (created at train time)
-    ├── logs/                    # Training log files (created at train time)
-    ├── results/                 # Metrics CSV and plots (created at train time)
-    ├── dataset.py               # Shared dataset class
-    ├── losses.py                # Loss functions
-    ├── model.py                 # 3D CNN architecture
-    ├── predict.py               # Inference script
-    ├── predict.sh               # Evaluation entry point
-    ├── train.py                 # Training script
-    ├── visualize_pet.ipynb      # Notebook for exploring PET volumes
-    ├── README.md
-    └── requirements.txt
+└── data/
+    ├── npy_files/               # All .npy volumes
+    ├── train.csv                # Training split (2,000 samples)
+    └── val.csv                  # Validation split (500 samples)
+```
+
+## Repository Structure
+
+```text
+/projectnb/medaihack/YOUR_TEAM/medaihack/ABPET/
+├── checkpoints/             # Saved model weights (created at train time)
+├── logs/                    # Training log files (created at train time)
+├── results/                 # Metrics CSV and plots (created at train time)
+├── dataset.py               # Shared dataset class
+├── losses.py                # Loss functions
+├── model.py                 # 3D CNN architecture
+├── predict.py               # Inference script
+├── predict.sh               # Evaluation entry point
+├── train.py                 # Training script
+├── visualize_pet.ipynb      # Notebook for exploring PET volumes
+├── README.md
+└── requirements.txt
 ```
 
 ## Getting Started
