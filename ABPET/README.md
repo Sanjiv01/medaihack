@@ -14,7 +14,12 @@ Predict **centiloid scores** from preprocessed 3D amyloid PET brain scans. Centi
 
 **Task:** Given a preprocessed 3D PET volume and the radiotracer used, predict the continuous centiloid score.
 
-## Setup
+
+## Environment Setup
+
+One person per team should create the team's virtual environment. All team members then activate it for their sessions.
+
+### First-time setup
 
 ```bash
 module load medaihack/spring-2026
@@ -25,6 +30,28 @@ virtualenv /projectnb/medaihack/YOUR_TEAM/venv_name
 source /projectnb/medaihack/YOUR_TEAM/venv_name/bin/activate
 pip install -r requirements.txt
 ````
+
+### Subsequent sessions
+
+For terminal and batch scripts, include these three lines:
+
+```bash
+module load medaihack/spring-2026
+module load python3/3.12.4
+source /projectnb/medaihack/YOUR_TEAM/vi_luad/bin/activate
+```
+
+For **OnDemand** (Jupyter or Code Server): load the two modules in the module list, and place the `source` command in the pre-launch dialog box.
+
+To install additional packages (e.g. if your approach needs `transformers` or `einops`):
+
+```bash
+pip install <package-name>
+```
+
+> **Warning:** Do **not** reinstall or upgrade `torch`, `torchvision`, or any `cuda`-related package. The versions in `requirements.txt` are matched to the CUDA driver on the cluster. Upgrading them will likely break GPU support.
+
+---
 
 ## Data
 
