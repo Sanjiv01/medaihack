@@ -14,6 +14,13 @@ Predict **centiloid scores** from preprocessed 3D amyloid PET brain scans. Centi
 
 **Task:** Given a preprocessed 3D PET volume and the radiotracer used, predict the continuous centiloid score.
 
+## Clone GitHub repository
+
+```bash
+cd <your_team_folder>
+git clone https://github.com/vkola-lab/medaihack.git
+cd medaihack/ABPET
+```
 
 ## Environment Setup
 
