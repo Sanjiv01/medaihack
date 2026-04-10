@@ -152,8 +152,8 @@ def main():
     parser.add_argument("--batch_size", type=int, default=8)
     parser.add_argument("--lr", type=float, default=3e-5)
     parser.add_argument("--num_workers", type=int, default=4)
-    parser.add_argument("--output", type=str, default="best_model.pt",
-                        help="Path to save the best model checkpoint")
+    parser.add_argument("--checkpoint_dir", type=str, default="checkpoints",
+                        help="Directory to save model checkpoints")
     parser.add_argument("--cache", action="store_true",
                         help="Cache all volumes in RAM (~12GB for 1500 samples)")
     parser.add_argument("--loss", type=str, default="mae",
@@ -161,12 +161,17 @@ def main():
                         help="Loss function to use")
     parser.add_argument("--patience", type=int, default=7,
                         help="Early stopping patience (0 to disable)")
-    parser.add_argument("--log_dir", type=str, default="logs",
+    parser.add_argument("--results_dir", type=str, default="results",
                         help="Directory for logs, metrics CSV, and plots")
     args = parser.parse_args()
 
+    # --- Directories ---
+    checkpoint_dir = Path(args.checkpoint_dir)
+    checkpoint_dir.mkdir(parents=True, exist_ok=True)
+    checkpoint_path = checkpoint_dir / "best_model.pt"
+
     # --- Logging ---
-    logger, log_dir, timestamp = setup_logger(Path(args.log_dir))
+    logger, log_dir, timestamp = setup_logger(Path(args.results_dir))
     logger.info(f"Args: {vars(args)}")
 
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
@@ -234,7 +239,7 @@ def main():
                 "model_state_dict": model.state_dict(),
                 "tracer_map": train_ds.tracer_map,
                 "num_tracers": len(train_ds.tracer_map),
-            }, args.output)
+            }, checkpoint_path)
             tag = " *"
         else:
             epochs_without_improvement += 1
@@ -268,7 +273,7 @@ def main():
     save_plots(history, log_dir, timestamp)
 
     logger.info(f"Best validation MAE: {best_mae:.2f} centiloid units")
-    logger.info(f"Model saved to {args.output}")
+    logger.info(f"Model saved to {checkpoint_path}")
     logger.info(f"Metrics: {metrics_path}")
     if HAS_MPL:
         logger.info(f"Plots: {log_dir / f'curves_{timestamp}.png'}")

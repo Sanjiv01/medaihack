@@ -45,7 +45,7 @@ For terminal and batch scripts, include these three lines:
 ```bash
 module load medaihack/spring-2026
 module load python3/3.12.4
-source /projectnb/medaihack/YOUR_TEAM/vi_luad/bin/activate
+source /projectnb/medaihack/YOUR_TEAM/venv_name/bin/activate
 ```
 
 For **OnDemand** (Jupyter or Code Server): load the two modules in the module list, and place the `source` command in the pre-launch dialog box.
@@ -65,7 +65,7 @@ pip install <package-name>
 | Split      | Cohort | N Samples | Description                               |
 | ---------- | ------ | --------- | ----------------------------------------- |
 | Training   | NACC   | 2,000     | National Alzheimer's Coordinating Center  |
-| Validation | A4     | 1,000     | Anti-Amyloid Treatment in Asymptomatic AD |
+| Validation | A4     | 500       | Anti-Amyloid Treatment in Asymptomatic AD |
 
 Each sample is a preprocessed `.npy` file with an associated centiloid score and tracer label.
 
@@ -143,12 +143,15 @@ ABPET/
 │   ├── train.csv        # Training split (stratified by tracer)
 │   └── val.csv          # Validation split (stratified by tracer)
 ├── code/
-│   ├── model.py         # 3D CNN architecture
-│   ├── train.py         # Training script
-│   ├── predict.py       # Inference script
-│   ├── dataset.py       # Shared dataset class
-│   ├── losses.py        # Loss functions
-│   └── split_data.py    # Re-generate train/val splits
+│   ├── model.py             # 3D CNN architecture
+│   ├── train.py             # Training script
+│   ├── predict.py           # Inference script
+│   ├── dataset.py           # Shared dataset class
+│   ├── losses.py            # Loss functions
+│   ├── checkpoints/         # Saved model weights (created at train time)
+│   ├── results/             # Logs, metrics CSV, and plots (created at train time)
+│   └── visualize_pet.ipynb  # Notebook for exploring PET volumes
+├── predict.sh
 ├── README.md
 └── requirements.txt
 ```
@@ -158,9 +161,7 @@ ABPET/
 To get started, you can visualize the different images using `visualize_pet.ipynb`.
 
 ```bash
-# Re-generate train/val split (optional, already done)
 cd code
-python split_data.py
 
 # Train
 python train.py --train_csv ../data/train.csv --val_csv ../data/val.csv
@@ -188,11 +189,11 @@ model.py    --->  3D CNN image encoder
             |
             v
 losses.py   --->  regression loss
-                  (MAE / SmoothL1 / weighted loss)
+                  (MAE / MSE)
             |
             v
 train.py    --->  checkpoints/best_model.pt        (best model weights)
-                  logs/                             (training + validation logs)
+                  results/                          (training + validation logs)
                   console: train loss, val MAE, Pearson correlation
             |
             v
