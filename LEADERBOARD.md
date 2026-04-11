@@ -22,7 +22,7 @@
 
 # ABPET Leaderboard
 
-| Rank | Team | MAE | Submission |
+| Rank | Team | MAE | Submitted  |
 |------|------|-----|------------|
 | 1 | Team 25 | 11.7919 | 2026-04-11 13:27:13 |
 | 2 | Team 23 | 12.4661 | 2026-04-11 11:47:07 |
